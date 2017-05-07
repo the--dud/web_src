@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<head>
+    <script>
+        // Google Analytics code
+    </script>
+    <script>
+        // Google ads code
+    </script>
+    <title>Hopp Hopp - Jeg vil se Verden!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Favicon stuff -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+    <!-- Fonts! -->
+    <link href="https://fonts.googleapis.com/css?family=Lora|Inconsolata|Sansita:700i" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/css/nanoscroller.css" rel="stylesheet">
+    <link href="http://hopphopp.no/css/datepicker.min.css" rel="stylesheet">
+    <link href="http://hopphopp.no/css/fancybox.css" rel="stylesheet">
+    <link href="http://hopphopp.no/css/cal.css" rel="stylesheet">
+    <link href="http://hopphopp.no/css/hopp.css" rel="stylesheet">
+
+    <!-- Javascript -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/locale/nb.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/locale/nb.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>
+    <script src="http://hopphopp.no/js/datepicker.min.js"></script>
+    <script src="http://hopphopp.no/js/datepicker.no.js"></script>
+    <script src="http://spin.js.org/spin.min.js"></script>
+    <script src="http://hopphopp.no/js/opts.js"></script>
+
+    <script>
+        // Declare state to empty right at the start.
+        var current_state = '';
+    </script>
+    <script src="http://hopphopp.no/js/StateManager.js"></script>
+    <!-- Mustache template for cards -->
+    <script id="card-template" type="x-tmpl-mustache">
+        <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+            <div class="flipper">
+                <div class="front">
+                    <div class="shadow-1 round5 card-main" style="background-image: url('https://maps.googleapis.com/maps/api/staticmap?center={{dest_city}},{{dest_country}}&zoom=12&size=200x150&maptype=roadmap&key=AIzaSyARylgkSrUD1q-UfIZ0IKUiPOeqCUEomkc')">
+                        <div class="card-top">
+                            <span class="pull-left"><h4>{{dest_city}}</h4></span><br>
+                        </div>
+                        <div class="card-bottom">
+                            <span class="pull-right"><h4>fra {{price}} kr</h4></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="shadow-1 round5 card-back" style="background-color: white;">
+                        <h5 style="line-height: 1.3;">
+                          {{dest}} ({{dest_IATA}})<br />
+                          {{dest_city}}, {{dest_country}}<br />
+                          fra {{price}} kr<br />
+                      </h5>
+                        <button style="margin-bottom: -7px;" data-dest="{{dest}}" data-IATA-code="{{dest_IATA}}" type="button" class="btn btn-default btn-lg btn-details">
+                          <span class="glyphicon glyphicon-calendar"></span> Se Datoer
+                      </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+        // Main script after body loads.
+        $(function() {
+            // Inital settings for website.
+            var target = $('#card-spinner');
+            var spinner = new Spinner(spin_opts).spin(target);
+            setState('0');
+            history.pushState({
+                s: '0'
+            }, null, '/');
+
+            // Function: make cards.
+            function makeCard(t_data) {
+                var template = $('#card-template').html();
+                var rendered = Mustache.render(template, t_data);
+                return rendered;
+            }
+
+            // Function: Creates the price bars for the calendar view.
+            function setPriceBar(price, min, max, dir) {
+                var html;
+                var gl;
+                var fill_percent = Math.round(((price - min) / (max - min))*100);
+                fill_percent = (fill_percent < 10) ? 10 : fill_percent;
+                var blank_percent = 100 - fill_percent;
+                if (fill_percent < 50) {
+                    gl = '180deg, rgba(0, 0, 0, 0) ' + blank_percent + '%, rgba(25, 175, 0, 0.6)' + fill_percent + '%';
+                } else {
+                    gl = '0deg, rgba(175, 25, 0, 0.6) ' + fill_percent + '%, rgba(0, 0, 0, 0)' + blank_percent + '%';
+                }
+                if (dir == "out") {
+                    html = '<div class="cal-item-out" style="background: linear-gradient(' + gl + ');"><span>' + price + '</span></div>';
+                }
+                if (dir == "in") {
+                    html = '<div class="cal-item-in" style="background: linear-gradient(' + gl + ');"><span>' + price + '</span></div>';
+                }
+                return html;
+            }
+
+            // Function to set state.
+            window.onpopstate = function(event) {
+                setState(event.state.s, event.state);
+            };
+
+            // OnClick for search button.
+            $("#btn_search").click(function() {
+                // Prepare data.
+                var texty = "<br><br>from: " + $("#alt_from").val() + "<br>" + "specific to: " + $("#alt_to").val() + "<br>" + "date: " + $("#date_alt").val();
+                var post_data = {
+                    from: $("#text_from").val(),
+                    from_IATA: $("#alt_from").val(),
+                    to_IATA: $("#alt_to").val(),
+                    date: $("#date_alt").val(),
+                    max_price: 5000
+                };
+                // Set new state.
+                setState('1', post_data);
+                history.pushState({
+                    s: '1',
+                    from: post_data['from'],
+                    date: post_data['date']
+                }, null, '/PlaceSelect');
+                // Create cards for new state.
+                // Get data from /api/routes POST
+                $("#card-container").html("");
+                $("#card-spinner").show();
+                $.post("http://hopphopp.no/api/routes", JSON.stringify(post_data), function(ret_data) {
+                    $("#card-spinner").hide();
+                    ret_data['trips'].forEach(function(trip) {
+                        $("#card-container").append(makeCard(trip));
+                    });
+                    $(".nano").nanoScroller();
+                }, "json");
+
+            });
+
+            // OnClick for Change button. Sets state to 0.
+            // FIX: Should set state -1 maybe?
+            $("#btn_change").click(function() {
+                setState('0');
+                history.pushState({
+                    s: '0'
+                }, null, '/');
+
+            });
+
+            // OnClick for button to pick a card.
+            $("#card-container").on("click", ".flip-container .flipper .back .card-back .btn-default", function(event) {
+                // Prepare data.
+                var post_data = {
+                    from: $("#text_from").val(),
+                    from_IATA: $("#alt_from").val(),
+                    to: ($(this).attr("data-dest") + " (" + $(this).attr("data-IATA-code") + " )"),
+                    to_IATA: $(this).attr("data-IATA-code"),
+                    date: $("#date_alt").val(),
+                };
+                // Set new state.
+                setState('2', post_data);
+                history.pushState({
+                    s: '2',
+                    from: post_data['from'],
+                    from_IATA: post_data['from_IATA'],
+                    to: post_data['to'],
+                    to_IATA: post_data['to_IATA'],
+                    date: post_data['date']
+                }, null, '/MonthSelect');
+                // Show activity spinner.
+                $("#card-spinner").show();
+                // Populates the calendar view for the new state.
+                // Get data from /api/dates POST
+                $.post("http://hopphopp.no/api/dates", JSON.stringify(post_data), function(ret_data) {
+                    $("#card-spinner").hide();
+                    ret_data['dates'].forEach(function(item) {
+                        $("#calendar").find("[data-date='" + item['date'] + "']").first().append(setPriceBar(item['price'], ret_data['min_price'], ret_data['max_price'], item['direction']));
+                    });
+                }, "json");
+            });
+            // Event triggered by calendar, when a date-range is picked.
+            // TODO: Create actual ciew for when date-range is picked.
+            $('#calendar').on( "PickedRange", function(event, start, end)  {
+                alert("TRIGGER! " + start.format("YYYY-MM-DD") + " " + end.format("YYYY-MM-DD"));
+            });
+            // Makes sure datapicker is correct size/state.
+            var dp = $("#datepicker1").datepicker(dp_opts);
+            dp.data('datepicker').selectDate(today.toDate());
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row top-nav">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-8">
+                <a href="/"><img src="img/fox_logo_main.png" width="249px" height="85px" class="logo_main"></a>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row main-box">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-8 main-content">
+                <div class="row info-box">
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6 info-content">
+                        <div class="row progress-box">
+                            <div class="col-lg-3 progress-item done-p">
+                                <span class="glyphicon glyphicon-search"></span> Søk
+                            </div>
+                            <div class="col-lg-3 progress-item active-p">
+                                <span class="glyphicon glyphicon-globe"></span> Plass
+                            </div>
+                            <div class="col-lg-3 progress-item">
+                                <span class="glyphicon glyphicon-calendar"></span> Dato
+                            </div>
+                            <div class="col-lg-3 progress-item">
+                                <span class="glyphicon glyphicon-record"></span> Hopp!
+                            </div>
+                        </div>
+                        <div id="mini-select-container" style="display: none;" class="row">
+                            <br />
+                            <div class="col-lg-4">
+                                <h5>Hopper fra:<br />
+                                <span id="mini-from"></span></h5>
+                            </div>
+                            <div id="mini-month-div" class="col-lg-4" style="display: none;">
+                                <h5>Måned:<br />
+                                <span id="mini-month"></span></h5>
+                            </div>
+                            <div id="mini-to-div" class="col-lg-4" style="display: none;">
+                                <h5>Hopper til:<br />
+                                <span id="mini-to"></span></h5>
+                            </div>
+                            <div class="col-lg-3">
+                                <button id="btn_change" type="button" class="btn btn-default pull-right" style="margin: 5px;">
+                                    <span class="glyphicon glyphicon-edit"></span> Endre Søk
+                                </button>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                </div>
+                <div id="select-container" style="display: none;" class="row">
+                    <br /><br />
+                    <div class="col-lg-2"></div>
+                    <div class="form-group col-lg-3">
+                        <label for="code"><h4>Hopp Fra</h4></label>
+                        <input id="text_from" type="text" class="form-control" />
+                        <input id="alt_from" type="hidden" />
+                        <input id="alt_to" type="hidden" />
+                        <br>
+                        <div id="region_to">
+                            <h4>Hopp Til <br /><span style="margin-left: 5px;" class="glyphicon glyphicon-globe text-splash"></span> Hele Verden</h4>
+                        </div>
+                        <div style="display:none" id="specific_to">
+                            <label for="text_to"><h4>Hopp Til</h4></label>
+                            <input id="text_to" type="text" class="form-control" />
+                        </div>
+                        <div style="display: none;" class="checkbox checkbox-success">
+                            <input id="specific_check" type="checkbox">
+                            <label for="specific_check"><h5 class="align-middle">Jeg vet akkurat hvor jeg vil reise!</h5></label>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <label style="margin-left:75px" for="datepicker1"><h4>Når (Måned)</h4></label><br>
+                        <div id="datepicker1"></div>
+                        <input type="hidden" id="date_alt" />
+                    </div>
+                    <div class="col-lg-2">
+                        <br><br>
+                        <button id="btn_search" type="button" class="btn btn-default btn-lg pull-left">
+                            <span class="glyphicon glyphicon-search"></span> Søk Reise!
+                        </button>
+                        <br>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+
+                <div id="debug1" style="display: none;" class="row"></div>
+                <div id="welcome-container" style="display: none;" class="container col-lg-8 col-lg-offset-2">
+                    <br /><br />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Heisann!</div>
+                        <div class="panel-body">
+                            Dette er en liten nettside hvor du kan finne bra flyreiser til en bra pris.<br /><br />
+                            Du kommer <strong>ikke</strong> til å finne flyreiser hvor du må vente i 10 timer på en flyplass, eller reiser hvor du må innom 5 forskjellige flyplasser før du endelig lander der du skal.<br />
+                            Slike dumme reiser gidder vi ikke en gang vise deg - vi viser deg bare enkle og greie turer slik som vi selv liker å reise!<br /><br />
+                            Alt du trenger å gjøre er å velge hvor du vil reise fra og når du vil reise - la denne nettsiden ordne resten. God tur! :)<br />
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div id="nano-container" class="nano" style="display: none;">
+                    <div id="card-container" class="container nano-content" style="display: none;">
+                        <!-- CARDS -->
+                    </div>
+                </div>
+
+                <div id="card-spinner" style="display: none;"></div>
+                <div id="calendar-container" style="display: none;">
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10">
+                            <div id="calendar"></div>
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row bottom-footer">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-8">
+                <div class="col-lg-4">
+                    <ul class="list-unstyled">
+                        <li><strong style="color: white;">Våre Beste Tips</strong></li>
+                        <li><a href="#">Karbonnøytralitet </a></li>
+                        <li><a href="#">Booke hotell/bil</a></li>
+                        <li><a href="#">Reiseråd fra UDI</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <ul class="list-unstyled">
+                        <li><strong style="color: white;">Om Oss</strong></li>
+                        <li><a href="#">Om Vulpen</a></li>
+                        <li><a href="#">Historie</a></li>
+                        <li><a href="#">Samarbeidspartnere</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

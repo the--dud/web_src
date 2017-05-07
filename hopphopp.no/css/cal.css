@@ -1,0 +1,20 @@
+.fc-view-container {
+    background-color: white;
+}
+.fc-day:hover{
+    background-color: white;
+    opacity: .5;
+}
+.fc-slats,
+.fc-content-skeleton,
+.fc-bgevent-skeleton{
+    pointer-events:none;
+}
+.fc-bgevent,
+.fc-event-container{
+    pointer-events:auto;
+}
+.fc-highlight { /* when user is selecting cells */
+    background-color: white;
+    opacity: .6;
+}

@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block body %}
+    <table style="width: 65%">
+        <tbody>
+            <tr>
+                <td colspan="2" style="padding: 10px"><h5><b>{{ computer.system_name }}</b> by <b>{{ computer.creator_name }}</b></h5></td>
+            </tr>
+            {% if not 'unknown' in computer.mobo %}
+                <tr>
+                    <td><img alt="Motherboard" title="Motherboard" src="{{ url_for('static', filename='img/mobo.png') }}" height="50"></td>
+                    <td>{{ computer.mobo }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    {% if 'AMD' in computer.cpu_name %}
+                        <img alt="Red CPU" title="Red CPU" src="{{ url_for('static', filename='img/amd_cpu.png') }}" height="50">
+                    {% elif 'Intel' in computer.cpu_name %}
+                        <img alt="Blue CPU" title="Blue CPU" src="{{ url_for('static', filename='img/intel_cpu.png') }}" height="50">
+                    {% else %}
+                        <img alt="Unknown CPU" title="Unknown CPU" src="{{ url_for('static', filename='img/cpu.png') }}" height="50">
+                    {% endif %}
+                </td>
+                <td>{{ computer.cpu_name }}</td>
+            </tr>
+            <tr>
+                <td><img alt="RAM" title="RAM" src="{{ url_for('static', filename='img/ram.png') }}" height="50"></td>
+                <td>{{ computer.mem_size }}</td>
+            </tr>
+            {% for gpu in computer.gpu_name %}
+                <tr>
+                    <td>
+                        {% if 'AMD' in gpu or 'ATI' in gpu %}
+                            <img alt="Red GPU" title="Red GPU" src="{{ url_for('static', filename='img/amd_gpu.png') }}" height="50">
+                        {% elif 'NVIDIA' in gpu %}
+                            <img alt="Green GPU" title="Green GPU" src="{{ url_for('static', filename='img/nvidia_gpu.png') }}" height="50">
+                        {% elif 'Intel' in gpu %}
+                            <img alt="Blue GPU" title="Blue GPU" src="{{ url_for('static', filename='img/intel_gpu.png') }}" height="50">
+                        {% else %}
+                            <img alt="Unknown GPU" title="Unknown GPU" src="{{ url_for('static', filename='img/cpu.png') }}" height="50">
+                        {% endif %}
+                    </td>
+                    <td>{{ gpu }}</td>
+                </tr>
+            {% endfor %}
+            {% for hdd in computer.hdds %}
+                <tr>
+                    {% if 'SSD' in hdd or 'OCZ' in hdd or 'KINGSTON' in hdd %}
+                        <td><img alt="Hard Disk Drive" title="Solid State Drive" src="{{ url_for('static', filename='img/ssd.png') }}" height="50"></td>
+                    {% else %}
+                        <td><img alt="Hard Disk Drive" title="Hard Disk Drive" src="{{ url_for('static', filename='img/hdd.png') }}" height="50"></td>
+                    {% endif %}
+                    <td>{{ hdd }}</td>
+
+                </tr>
+            {% endfor %}
+            {% for monitor in computer.monitors %}
+                <tr>
+                    <td><img alt="Monitor" title="Monitor" src="{{ url_for('static', filename='img/monitor.png') }}" height="50"></td>
+                    <td>{{ monitor }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

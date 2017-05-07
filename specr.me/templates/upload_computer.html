@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="/upload" method=post enctype=multipart/form-data>
+        {{ form.hidden_tag() }}
+        {{ form.creator_name.label }} {{ form.creator_name(size=20) }}
+        {{ form.comp_name.label }} {{ form.comp_name(size=20) }}
+        <br>
+        <input type="file" name="file" accept="application/xml, text/xml">
+        <br>
+        <input class="button-primary" type="submit" value="Upload">
+    </form>
+{% endblock %}

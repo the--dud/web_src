@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>
+            {% if form %}
+                specr.save(me)
+            {% else %}
+                specr.load({{ hexcomp }})
+            {% endif %}
+        </title>
+        <meta name="description" content="Check out my awesome computer specs!">
+        <meta name="author" content="curbcore">
+        {% if not form %}
+            <meta property="og:title" content="{{ computer.system_name }} by {{ computer.creator_name }}">
+        {% else %}
+            <meta property="og:title" content="specr.me">
+        {% endif %}
+        <meta property="og:site_name" content="specr.me">
+        <meta property="og:image" content="http://specr.me/static/img/specr_logo_v1.png">
+        <!-- Mobile Specific Metas –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- FONT –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+        <!-- CSS –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/specr_skeleton.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/alerts.css') }}">
+
+        <!-- Favicon –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+        <script>
+            function navGen(delta, comp) {
+                if (delta == 'prev') {
+                    comp = (parseInt(comp) - 1).toString(16);
+                } else if (delta == 'next') {
+                    comp = (parseInt(comp) + 1).toString(16);
+                }
+                document.location = "/show/" + comp;
+            }
+            function getHex(comp) {
+                return (parseInt(comp) - 1).toString(16);
+            }
+            function openWin(args, comp){
+                if (args == 'none') {
+                    return
+                }
+                loc = 'http://127.0.0.1:5000/render/' + args + '/' + comp;
+                window.open(loc, '', 'width=500, height=500, menubar=no, location=no, toolbar=no, status=no');
+            }
+        </script>
+    </head>
+    <body>
+        <!-- Primary Page Layout –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="alert-box {{ category }}"><span>{{ category }}: </span>{{ message }}</div>
+        {% endfor %}
+        <div class="container">
+
+            <div class="row">
+                <div class="five column" style="margin-top: 10%">
+
+                    {% if form %}
+                        <h1>specr.save(me)</h1>
+                    {% else %}
+                        <h1>specr.load({{ hexcomp }})</h1>
+                    {% endif %}
+                    {% block body %}{% endblock %}
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="ten column">
+                    {% if not form %}
+                        {% if comp != 256%}
+                            <a class="button" onclick="navGen('prev', {{comp}})">Previous</a>
+                        {% else %}
+                            <a class="button" onclick="navGen('prev', {{comp}})" style="pointer-events: none; opacity: 0.75">Previous</a>
+                        {% endif %}
+                    {% endif %}
+                    <a class="button" href="/random">Random!</a>
+                    {% if not form %}
+                        {% if comp != max_urlid %}
+                            <a class="button" onclick="navGen('next', {{comp}})">Next</a>
+                        {% else %}
+                            <a class="button" onclick="navGen('next', {{comp}})" style="pointer-events: none; opacity: 0.75">Next</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="ten column">
+                    {% if not form %}
+                        <a style="margin-left: 7.25rem" class="button button-primary" href="/">Upload Your Own Specs!</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="lfloat" style="">
+                {% if form %}
+                    <b>Usage:</b><br>
+                    Upload your dxdiag file in XML format -> Get a unique URL which you can share as much you like - you can even keep it safe for future use!<br>
+                    <br>
+                    <b>How To Get DxDiag.xml</b><br>
+                        <ul>
+                            <li>Press Windows key + R</li>
+                            <li>Type "dxdiag" in the run dialogue, press Enter</li>
+                            <li>Press the "Save All Information..." button</li>
+                            <li>Change "Save as type:" to XML file type, then Save.</li>
+                        </ul>
+                {% else %}
+                    <b>Permanent link to your specs:</b>
+                    <textarea style="width: 100%" class="text-to-copy" readonly>{{ request.url }}</textarea>
+                    <button class="js-copy-btn button-primary">Copy!</button>
+                    <br>
+                    <div class="addthis_inline_share_toolbox" data-title="specr.me"></div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="ten column small-font">
+                    <hr>
+                    <b>specr.me</b> is a website designed to give you a quick and easy way to show off or reference your computer specifications.<br>
+                    Made by <b><a href="http://curbcore.no" target="_blank">CurbCore 2017</a></b> with (mostly) free software.<br>
+                    <br>
+                    Software stack: <b>Debian, Nginx, Python, Flask, & PostgreSQL</b>.<br>
+                    Development tools: <b>Windows 10, Atom, GIMP & Dropbox</b>.<br>
+                    CSS3 by <a href="http://getskeleton.com/">Skeleton</a>. Icons by <a href="https://thenounproject.com/ArtZ91/collection/computer/">Arthur Shlain</a>. <a href="https://github.com/ryanpcmcquen/simpleJsCopy">simpleJsCopy.js.</a>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <!-- End Document –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-59060bd09aca1605"></script>
+
+        <script src="{{ url_for('static', filename='js/simpleJsCopy.js') }}"></script>
+
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-69474070-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+
+    </body>
+</html>

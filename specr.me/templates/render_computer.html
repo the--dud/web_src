@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>
+            specr.load({{ hexcomp }})
+        </title>
+        <!-- Mobile Specific Metas –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- FONT –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+        <!-- CSS –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/specr_skeleton.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/alerts.css') }}">
+
+        <!-- Favicon –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+    </head>
+    <body>
+
+
+        {% if type == 'md' %}
+            <div style="margin: 1.5rem; border: solid 1px black; padding: 1.5rem">
+                [{{ computer.system_name }} by {{ computer.creator_name }}](http://specr.me/show/{{ hexcomp }})<br>
+                <br>
+                Type | Part<br>
+                ---|---<br>
+                {% if not 'unknown' in computer.mobo %}
+                    Motherboard | {{ computer.mobo }}<br>
+                {% endif %}
+                CPU | {{ computer.cpu_name }}<br>
+                RAM	| {{ computer.mem_size }}<br>
+                {% for gpu in computer.gpu_name %}
+                    GPU | {{ gpu }}<br>
+                {% endfor %}
+                {% for hdd in computer.hdds %}
+                    HDD | {{ hdd }}<br>
+                {% endfor %}
+                {% for monitor in computer.monitors %}
+                    Monitor | {{ monitor }}<br>
+                {% endfor %}
+            </div>
+        {% elif type == 'html'%}
+            <code>
+                 meh
+            </code>
+        {% endif %}
+
+
+    </body>
+</html>

@@ -1,0 +1,44 @@
+/* Adapted from http://www.cssportal.com/blog/css-notification-boxes/ */
+
+.alert-box {
+    position: absolute;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 5px 25px;
+    margin: 5px;
+    width: 90%;
+    animation: hideAnimation 3s 1;
+    animation-fill-mode: forwards;
+    animation-delay: 5s;
+}
+
+@keyframes hideAnimation {
+    to {
+        top: -100px;
+        height: 0px;
+        overflow: hidden;
+        border: none;
+        opacity: 0;
+    }
+}
+
+.alert-box span {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.error {
+    border: 1px solid #f5aca6;
+}
+
+.success {
+    border: 1px solid #a6ca8a;
+}
+
+.warning {
+    border: 1px solid #f2c779;
+}
+
+.notice {
+    border: 1px solid #8ed9f6;
+}
